@@ -14,17 +14,17 @@ export default class Start extends React.Component {
   
   setActiveColor(color) {
     this.setState({color});
-    console.log(this.state.color);
   }
   activeColor(color) {
     if (this.state.color === color) {
+      console.log(color);
       return {
-        borderColor: "#ffffff",
-        borderWidth: "5px"
+        borderWidth: 10,
+        borderColor: "transparent"
       }
     } else {
       return {
-        borderWidth: "0px"
+        boxShadow: "none"
       }
     }
   }
@@ -36,12 +36,12 @@ export default class Start extends React.Component {
           <Text style={styles.title}>Chat</Text>
           <View style={styles.bodyContainer}>
             <TextInput
-             style={{height: "40px", borderColor: 'gray', borderWidth: 1, fontSize: 16, fontWeight: 300, fontColor: "#757083", marginBottom: "10%"}}
+             style={{height: 40, borderWidth: 1, fontSize: 16, fontWeight: "300", fontColor: "#757083", marginBottom: "10%", width: "88%", padding: 10}}
              onChangeText={(name) => this.setState({name})}
             value={this.state.name}
             placeholder='Your name'
             />
-            <Text style={{fontSize: 16, fontWeight: 300, fontColor: "#757083"}}>Choose background color:</Text>
+            <Text style={{fontSize: 16, fontWeight: "300", fontColor: "#757083"}}>Choose background color:</Text>
             <View style={styles.colorView}>
             <TouchableOpacity style={[styles.color1, styles.color, this.activeColor("#090C08")]} onPress={() => this.setActiveColor("#090C08")}>
             </TouchableOpacity>
@@ -71,33 +71,33 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    padding: "6%",
-    alignItems: "bottom"
+    justifyContent: "center",
   },
   bodyContainer: {
-    width: "100%",
-    height: "44%",
-    backgroundColor: "white",
-    margin: "auto",
+    backgroundColor: 'white',
+    height: '44%',
+    width: '88%',
     padding: "6%",
-    flexDirection: "col"
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: '6%',
   },
   title: {
     flex: 1,
     fontSize: 45,
-    fontWeight: 600,
+    fontWeight: "600",
     color: "#FFFFFF",
     textAlign: "center",
-    marginTop: "20px"
+    marginTop: 20
   },
   colorView: {
     flexDirection: "row",
   },
   color: {
-    width: "50px",
-    height: "50px",
-    borderRadius: "25px",
-    marginRight: "10px"
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10
   },
   color1: {
     backgroundColor: "#090C08"
@@ -113,17 +113,18 @@ const styles = StyleSheet.create({
   },
   startChattingButton: {
     backgroundColor: "#757083",
-    height: "50px",
-    textAlign: "center",
+    height: 50,
+    width: "100%",
     position: "absolute",
-    width: "88%",
     bottom: "6%",
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center'
   },
   startChatting: {
-    fontSize: "16px",
+    fontSize: 16,
     fontWeight: "600",
     color: "#ffffff",
-    margin: "auto",
-    paddingTop: "0px"
+    paddingTop: 0
   }
 });
