@@ -9,12 +9,21 @@ import 'react-native-gesture-handler';
 // import react Navigation
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 const Stack = createStackNavigator();
 export default class Main extends Component {
   constructor() {
     super();
       this.state = {
+
       };
+    
+  }
+  componentDidMount() {
+    //save
+    
+  }
+  componentWillUnmount() {
     
   }
 
@@ -35,6 +44,8 @@ export default class Main extends Component {
         />
       </Stack.Navigator>
       </NavigationContainer>
+      
+      
     );
   }
 }

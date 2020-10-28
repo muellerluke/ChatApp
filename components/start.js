@@ -17,7 +17,6 @@ export default class Start extends React.Component {
   }
   activeColor(color) {
     if (this.state.color === color) {
-      console.log(color);
       return {
         borderWidth: 10,
         borderColor: "transparent"
