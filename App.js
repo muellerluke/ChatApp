@@ -26,7 +26,6 @@ export default class Main extends Component {
   componentWillUnmount() {
     
   }
-
   render() {
     return (
       <NavigationContainer>
