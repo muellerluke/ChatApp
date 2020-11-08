@@ -1,13 +1,17 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { View, Platform, KeyboardAvoidingView } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat'
 import { color } from "react-native-reanimated";
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from '@react-native-community/async-storage';
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 const firebase = require('firebase');
 require('firebase/firestore');
+import { YellowBox } from "react-native";
+YellowBox.ignoreWarnings(["Warning: ..."]);
+import CustomActions from "./CustomActions";
 
-export default class Chat extends React.Component {
+export default class Chat extends Component {
   constructor() {
     super();
     this.state = {
@@ -20,7 +24,9 @@ export default class Chat extends React.Component {
       },
       uid: 0,
       loggedInText: "",
-      isConnected: false
+      isConnected: false,
+      image: null,
+      location: null
     }
 
     const firebaseConfig = {
@@ -53,19 +59,23 @@ export default class Chat extends React.Component {
       if (connection.isConnected) {
         console.log('online');
         this.setState({isConnected: true});
-        this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
-          if (!user) {
+        this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (aUser) => {
+          if (!aUser) {
             try {
               await firebase.auth().signInAnonymously();
-              console.log(user);
+              console.log(aUser);
             } catch (error) {
               console.log(error);
             }
             
           }
           this.setState({
-            uid: user.uid,
-            loggedInText: "Hello there"
+            user: {
+              _id: aUser.uid,
+            },
+            uid: aUser.uid,
+            loggedInText: "Hello there",
+
           });
         });
         this.unsubscribe = this.referenceMessages.orderBy("createdAt", "desc")
@@ -131,7 +141,9 @@ export default class Chat extends React.Component {
           _id: data.user._id,
           name: data.user.name,
           avatar: data.user.avatar
-        }
+        },
+        image: data.image || "",
+        location: data.location || "",
       });
     });
     this.setState({
@@ -146,12 +158,15 @@ export default class Chat extends React.Component {
       text: this.state.messages[0].text,
       createdAt: this.state.messages[0].createdAt,
       user: this.state.messages[0].user,
-      uid: this.state.uid
+      uid: this.state.uid,
+      image: this.state.messages[0].image || "",
+      location: this.state.messages[0].location || "",
     });
   }
 
   // when message is sent append it to array in previous state
   onSend(messages = []) {
+    console.log(messages);
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }), () => {
@@ -180,21 +195,50 @@ export default class Chat extends React.Component {
       return <InputToolbar {...props} />;
     }
   };
-  componentWillUnmount() {
-    this.authUnsubscribe();
-    this.unsubscribe();
+
+  renderMapView(props) {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <View>
+          <MapView
+            style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+            region={{
+              latitude: currentMessage.location.latitude,
+              longitude: currentMessage.location.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421
+            }}
+          />
+        </View>
+      );
+    }
+    return null;
   }
+
+  renderCustomActions = props => {
+    return <CustomActions {...props} />;
+  };
 
   render() {
     return (
       <View style={{backgroundColor: this.state.color, flex: 1}}>
+        {this.state.image && (
+          <Image
+            source={{ uri: this.state.image.uri }}
+            style={{ width: 200, height: 200 }}
+          />
+        )}
         <GiftedChat
-        renderInputToolbar={this.renderInputToolbar.bind(this)}
+          renderCustomView={this.renderMapView.bind(this)}
+          renderActions={this.renderCustomActions}
+          renderInputToolbar={this.renderInputToolbar.bind(this)}
           renderBubble={this.renderBubble.bind(this)}
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
+          image={this.state.image}
           user={{
-          _id: 1,
+          _id: this.state.uid
           }}
         />
         {/* move input field with keyboard on android*/}

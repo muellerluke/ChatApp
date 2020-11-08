@@ -40,7 +40,7 @@ export default class Start extends React.Component {
             value={this.state.name}
             placeholder='Your name'
             />
-            <Text style={{fontSize: 16, fontWeight: "300", fontColor: "#757083"}}>Choose background color:</Text>
+            <Text style={{fontSize: 16, fontWeight: "300", color: "#757083"}}>Choose background color:</Text>
             <View style={styles.colorView}>
             <TouchableOpacity style={[styles.color1, styles.color, this.activeColor("#090C08")]} onPress={() => this.setActiveColor("#090C08")}>
             </TouchableOpacity>
