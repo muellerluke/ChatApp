@@ -53,7 +53,7 @@ export default class Chat extends Component {
     let { color } = this.props.route.params;
     this.setState({color});
     //set the title of the component (as shown on the top of the screen) as the name
-    this.props.navigation.setOptions({ title: name });
+    this.props.navigation.setOptions({ title:`${name}'s Chat` });
     //get network info; if connected then get messages from db else get from interal storage
     NetInfo.fetch().then(connection => {
       if (connection.isConnected) {
@@ -93,7 +93,7 @@ export default class Chat extends Component {
   }
 
   //get messages from internal storage if offline
-  async getMessages() {
+  getMessages = async () => {
     let messages = '';
     try {
       messages = await AsyncStorage.getItem('messages') || [];
@@ -106,7 +106,7 @@ export default class Chat extends Component {
   };
 
   //delete messages from internal storage
-  async deleteMessages() {
+  deleteMessages = async () => {
     try {
       await AsyncStorage.removeItem('messages');
       this.setState({
@@ -118,7 +118,7 @@ export default class Chat extends Component {
   }
 
   //save message from state to internal storage
-  async saveMessages() {
+  saveMessages = async () => {
     try {
       await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));
     } catch (error) {
@@ -132,7 +132,7 @@ export default class Chat extends Component {
     // go through each document
     querySnapshot.forEach((doc) => {
       // get the QueryDocumentSnapshot's data
-      var data = doc.data();
+      let data = doc.data();
       messages.push({
         _id: data._id,
         text: data.text.toString(),
@@ -152,7 +152,7 @@ export default class Chat extends Component {
   };
 
   //add messages to db
-  addMessages() {
+  addMessages = () => {
     this.referenceMessages.add({
       _id: this.state.messages[0]._id,
       text: this.state.messages[0].text,
@@ -165,7 +165,7 @@ export default class Chat extends Component {
   }
 
   // when message is sent append it to array in previous state
-  onSend(messages = []) {
+  onSend = (messages = []) => {
     console.log(messages);
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
@@ -175,8 +175,9 @@ export default class Chat extends Component {
     }
     );
   }
+
   // apply styling to message bubble component
-  renderBubble(props) {
+  renderBubble = props => {
     return (
       <Bubble
         {...props}
@@ -189,14 +190,14 @@ export default class Chat extends Component {
     )
   }
 
-  renderInputToolbar(props) {
+  renderInputToolbar = props => {
     if (!this.state.isConnected) {
     } else {
       return <InputToolbar {...props} />;
     }
   };
 
-  renderMapView(props) {
+  renderMapView = props => {
     const { currentMessage } = props;
     if (currentMessage.location) {
       return (
